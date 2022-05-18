@@ -1,9 +1,10 @@
 from http.client import HTTPResponse
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 
 monthly_challenges = {
+    # dictionaries are ordered in Python 3
     "january": "Eat Meat for the entire month!",
     "february": "Walk for at least 20 minutes every day!",
     "march": "Learn Django for at least 20 minutes every day!",
@@ -16,7 +17,6 @@ monthly_challenges = {
     "october": "Walk for at least 20 minutes every day!",
     "november": "Walk for at least 20 minutes every day!",
     "december": "Walk for at least 20 minutes every day!",
-
 }
 
 # Functions in views can accept the request object for usage within
@@ -41,4 +41,15 @@ def monthly_challenge(request, month):
 
 
 def monthly_challenge_by_number(request, month):
-    return HttpResponse(month)
+
+    # grab keys from challenges and convert to list
+    months = list(monthly_challenges.keys())
+
+    # Detect error if month number is greater than number of months
+    if month > len(months):
+        return HttpResponseNotFound("Invalid month")
+
+    # grab month by index
+    forward_month = months[month-1]
+    # redirect to new url using string verison of month in URL
+    return HttpResponseRedirect('/challenges/'+forward_month)

@@ -1,8 +1,8 @@
 from http.client import HTTPResponse
-from django.http import HttpResponse
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
+from django.template.loader import render_to_string
 
 monthly_challenges = {
     # dictionaries are ordered in Python 3
@@ -17,24 +17,31 @@ monthly_challenges = {
     "september": "Walk for at least 20 minutes every day!",
     "october": "Walk for at least 20 minutes every day!",
     "november": "Walk for at least 20 minutes every day!",
-    "december": "Walk for at least 20 minutes every day!",
+    "december": None,
 }
 
 
 def index(request):
     # Init list items
-    list_items = ""
+    # list_items = ""
+    months = list(monthly_challenges.keys())
+
+    # Below code is not conventional as presentation logic should be in templates
 
     # Loop through months of monthly challenges
-    for month in monthly_challenges.keys():
-        # Generate URL for link
-        month_path = reverse("str-monthly-challenge", args=[month])
-        # Build list item
-        list_items += f"<li><a href=\"{month_path}\">{month.capitalize()}</a></li>"
+    # for month in monthly_challenges.keys():
+    # Generate URL for link
+    # month_path = reverse("str-monthly-challenge", args=[month])
+    # Build list item
+    # list_items += f"<li><a href=\"{month_path}\">{month.capitalize()}</a></li>"
 
     # Set list items in unordered list
-    response_data = f"<ul>{list_items}</ul>"
-    return HttpResponse(response_data)
+    # response_data = f"<ul>{list_items}</ul>"
+    # return HttpResponse(response_data)
+
+    return render(request, "challenges/index.html", {
+        "months": months
+    })
 
 # Functions in views can accept the request object for usage within
 # def january(request):
@@ -50,12 +57,26 @@ def index(request):
 # url parameters can be added as argument to the function to access
 def monthly_challenge(request, month):
     print("Monthly challenge request: " + month)
+
     try:
         challenge_text = monthly_challenges[month]
-        response_data = f"<h1>{challenge_text}</h1>"
-        return HttpResponse(response_data)
+    # Render html template to string
+    # template_string = render_to_string("challenges/challenge.html")
+    # return HttpResponse(template_string)
+
+    # render converts to string and returns response
+    # requires request as first argument
+    # third argument is key value pair of vars to use in templates
+    # note: render is always a successful request
+        return render(request, "challenges/challenge.html", {
+            "text": challenge_text,
+            "month": month
+        })
     except:
-        return HttpResponseNotFound("<h1>This month is not supported</h1>")
+        # response_data = render_to_string("404.html")
+        # return HttpResponseNotFound(response_data)
+        # Raise Http404 will automatically look for a Django template file with 404 and serve
+        raise Http404()
 
 
 def monthly_challenge_by_number(request, month):

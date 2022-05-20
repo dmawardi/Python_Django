@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+<!-- Page title block -->
+{% block page_title %} {{month|title}} Challenges {% endblock %}
+
+<!-- Content block -->
+{% block page_content %}
+<!-- Header -->
+{% include "challenges/includes/header.html" %}
+<!-- Uses Django template language using | to capitalize -->
+<h1>{{month|title}}</h1>
+{% if text %}
+<h2>{{text}}</h2>
+{% else %}
+<h2>There is no challenge for this month!</h2>
+{% endif %} {% endblock %}

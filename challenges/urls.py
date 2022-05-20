@@ -3,7 +3,7 @@ from . import views
 
 # List of url patterns
 urlpatterns = [
-    path("", views.index),
+    path("", views.index, name="index"),
     # Uses path function to create path of /january and uses views.index to resolve response
     # path("january", views.january),
     # path("february", views.february),

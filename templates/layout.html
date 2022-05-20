@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% comment %} Within block is default page title {% endcomment %}
     <title>{% block page_title %} Monthly Challenges {% endblock %}</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
     {% block css_files %}{% endblock %}
   </head>
   <body>
